@@ -28,7 +28,7 @@ DefClass: chair_zzz (ug_base_part);
     width, large_timble_side:;
     height, leg_length:;
     
-    Direction, Vector(0,0,1);
+    #Direction, Vector(0,0,1);
     quantity, 4;
 };
     

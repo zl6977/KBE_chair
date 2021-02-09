@@ -1,7 +1,7 @@
 #HTTP Server template / Chair example
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import os
+import os, requests
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 1234
@@ -95,7 +95,6 @@ class MyHandler(BaseHTTPRequestHandler):
             
             
     def do_POST(s):
-
         s.send_response(200)
         s.send_header("Content-type", "text/html")
         s.end_headers()
@@ -161,7 +160,14 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<input type="submit" value="Submit">', 'utf-8'))
             s.wfile.write(bytes('</form></body></html>', 'utf-8'))
             
+            #manufacurable check-query the result from the manufChecker.py server
+            dataToSend = "leg_length="+str(leg_length[1])+"&back_height="+str(back_height[1])+"&seat_length="+str(seat_length[1])
+            dataToSend += "&seat_width="+str(seat_width[1])+"&back_tilt_angle="+str(back_tilt_angle[1])+"&top_rail_added_length="+str(top_rail_added_length[1])
+            
+            rulecheckResult= check_manufacutrable("http://127.0.0.1:4321/manufCheck", dataToSend)
+            s.wfile.write(bytes('<p>The rule check result: ' + rulecheckResult + '</p>', 'utf-8'))
             update_template(leg_length[1],back_height[1],seat_length[1],seat_width[1],back_tilt_angle[1],top_rail_added_length[1])
+            
 
 def update_template(leg_length,back_height,seat_length,seat_width,back_tilt_angle,top_rail_added_length):
     f = open(os.path.dirname(os.path.abspath(__file__))+"\\templates\\chair_zzz.dfa","r")
@@ -178,6 +184,11 @@ def update_template(leg_length,back_height,seat_length,seat_width,back_tilt_angl
     ftowrite = open(os.path.dirname(os.path.abspath(__file__))+"\\chair_zzz.dfa","w")
     ftowrite.write(fileContent)
     ftowrite.close()
+    
+def check_manufacutrable(url, dataToSend):
+    x = requests.post(url, data = dataToSend)
+    #print the response text (the content of the requested file):
+    return x.text
 
 if __name__ == '__main__':
     server_class = HTTPServer

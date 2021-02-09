@@ -5,21 +5,54 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 4321 # Maybe set this to 1234
 
-sidePairUp = 2000
-sidePairLow = 500
-depthPairUp = 2000
-depthPairLow = 500
-heightPairUp = 2000
-heightPairLow = 500
-widthPairUp = 2000
-widthPairLow = 500
-
 class RuleChecker():
-    def manufCheck():
-        pass
+    leg_length_range = [500,1500]
+    back_height_range = [400,1500]
+    seat_length_range = [200,800]
+    seat_width_range = [300,800]
+    back_tilt_angle_range = [0,30]
+    top_rail_added_length_range = [0,400]
+    def check_manufacutrable(self, ParameterSet):
+        leg_length = ParameterSet[0]
+        back_height = ParameterSet[1]
+        seat_length = ParameterSet[2]
+        seat_width = ParameterSet[3]
+        back_tilt_angle = ParameterSet[4]
+        top_rail_added_length = ParameterSet[5]
+        #flag = ture means it is OK
+        leg_length_flag = self.compare_para_in_range(self.leg_length_range, leg_length)
+        back_height_flag = self.compare_para_in_range(self.back_height_range, back_height)
+        seat_length_flag = self.compare_para_in_range(self.seat_length_range, seat_length)
+        seat_width_flag = self.compare_para_in_range(self.seat_width_range, seat_width)
+        back_tilt_angle_flag = self.compare_para_in_range(self.back_tilt_angle_range, back_tilt_angle)
+        top_rail_added_length_flag = self.compare_para_in_range(self.top_rail_added_length_range, top_rail_added_length)
+        
+        result = ""
+        if not leg_length_flag:
+            result += "leg_length not OK\n"
+        if not back_height_flag:
+            result += "back_height_ not OK\n"
+        if not seat_length_flag:
+            result += "seat_length not OK\n"
+        if not seat_width_flag:
+            result += "seat_width not OK\n"
+        if not back_tilt_angle_flag:
+            result += "back_tilt_angle not OK\n"
+        if not top_rail_added_length_flag:
+            result += "top_rail_added_length not OK\n"
+        if result == "":
+            result="ALL OK"
+        return result
+        
+    def compare_para_in_range(self, range, valueToCheck):
+        lower=range[0]
+        upper=range[1]
+        flag = True if (lower <= valueToCheck and upper >= valueToCheck) else False
+        return flag
 
 # Handler of HTTP requests / responses
 class MyHandler(BaseHTTPRequestHandler):
+    rule_checker = RuleChecker()
     def do_HEAD(s):
         s.send_response(200)
         s.send_header("Content-type", "text/html")
@@ -64,7 +97,6 @@ class MyHandler(BaseHTTPRequestHandler):
             
             
     def do_POST(s):
-        global sidePairUp, sidePairLow, depthPairUp, depthPairLow, heightPairUp,  heightPairLow, widthPairUp, widthPairLow
         s.send_response(200)
         s.send_header("Content-type", "text/html")
         s.end_headers()
@@ -119,7 +151,7 @@ class MyHandler(BaseHTTPRequestHandler):
             
             s.wfile.write(bytes('</form></body></html>', 'utf-8'))
             
-        elif path.find("/orderChair") != -1:
+        elif path.find("/manufCheck") != -1:
 
             content_len = int(s.headers.get('Content-Length'))
             post_body = s.rfile.read(content_len)
@@ -128,22 +160,18 @@ class MyHandler(BaseHTTPRequestHandler):
             
             #Get the param value
             pairs = param_line.split("&")
-            sidePair = pairs[0].split("=")
-            depthPair = pairs[1].split("=")
-            heightPair = pairs[2].split("=")
-            widthPair = pairs[3].split("=")
+            leg_length = pairs[0].split("=")
+            back_height = pairs[1].split("=")
+            seat_length = pairs[2].split("=")
+            seat_width = pairs[3].split("=")
+            back_tilt_angle = pairs[4].split("=")
+            top_rail_added_length = pairs[5].split("=")
             
-            if (sidePair < sidePairUp) and (sidePair > sidePairDown)) and
-                (depthPair < sidePairUp) and (depthPair > sidePairDown)) and
-                (sidePair < sidePairUp) and (sidePair > sidePairDown)) and
-                (sidePair < sidePairUp) and (sidePair > sidePairDown)):
-                s.wfile.write(bytes('OK', 'utf-8'))
-            else:
-            s.wfile.write(bytes('NOK', 'utf-8'))
+            parameterSet = [int(leg_length[1]), int(back_height[1]), int(seat_length[1]), int(seat_width[1]), int(back_tilt_angle[1]), int(top_rail_added_length[1])]
+            check_result = s.rule_checker.check_manufacutrable(parameterSet)
+            
+            s.wfile.write(bytes(check_result, 'utf-8'))
 
-            
-            
- 
 if __name__ == '__main__':
     server_class = HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
