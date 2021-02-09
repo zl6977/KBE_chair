@@ -1,0 +1,4 @@
+mklink /h "C:\GitRepo\KBE_chair\templates\chair_zzz.dfa" "C:\Users\lianz\Google Drive\Huawei matebook 14\NTNU\Courses\TM4275-KBE project\KF_code_KBE_PROJ\templates\chair_zzz.dfa"
+mklink /h "C:\GitRepo\KBE_chair\server_chair_zzz.py" "C:\Users\lianz\Google Drive\Huawei matebook 14\NTNU\Courses\TM4275-KBE project\KF_code_KBE_PROJ\server_chair_zzz.py"
+mklink /h "C:\GitRepo\KBE_chair\manufChecker.py" "C:\Users\lianz\Google Drive\Huawei matebook 14\NTNU\Courses\TM4275-KBE project\KF_code_KBE_PROJ\manufChecker.py"
+mklink /h "C:\GitRepo\KBE_chair\chair_zzz.dfa" "C:\Users\lianz\Google Drive\Huawei matebook 14\NTNU\Courses\TM4275-KBE project\KF_code_KBE_PROJ\chair_zzz.dfa"

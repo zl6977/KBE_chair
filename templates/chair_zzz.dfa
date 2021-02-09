@@ -1,0 +1,153 @@
+#! NX/KF 4.0
+DefClass: chair_zzz (ug_base_part);
+    #Parameters for the chair
+    (number parameter) large_timble_side: 50;
+    (number parameter) middle_timble_side: 30;
+    (number parameter) small_timble_side: 20;
+    
+    (number parameter) leg_length: <PARA_leg_length>;     #500
+    
+    (number parameter) back_tilt_angle: <PARA_back_tilt_angle>;
+    (number parameter) back_height: <PARA_leg_back_height>;        #600
+
+    (number parameter) top_rail_added_length:   <PARA_top_rail_added_length>;
+    (number parameter) top_rail_length: seat_width:- 2*large_timble_side: + top_rail_added_length:;
+    (number parameter) seat_length: <PARA_seat_length>;        #600
+    (number parameter) seat_width: <PARA_seat_width>;         #500
+    
+#duduced or other parameters
+    (number parameter) top_rail_height: 3*large_timble_side:;
+    (number parameter) leg_side: large_timble_side:;
+    (number parameter) seat_height: middle_timble_side:;
+        
+(child list) legs: 
+{
+    class, ug_block;
+    Origin, nth(child:index:, origin_list_legs:);
+    length, large_timble_side:;
+    width, large_timble_side:;
+    height, leg_length:;
+    
+    Direction, Vector(0,0,1);
+    quantity, 4;
+};
+    
+(list) origin_list_legs:     #for use in (child list) legs: 
+{
+    Point(0,0,0),
+    Point(seat_length:-large_timble_side:,0,0),
+    Point(seat_length:-large_timble_side:,seat_width:-large_timble_side:,0),
+    Point(0,seat_width:-large_timble_side:,0)
+};
+
+(child) seat:
+{
+    class, ug_block;    #ug_cylinder, ug_sphere, ug_cone...
+    Origin, Point(0,0,leg_length:);
+    length, seat_length:;
+    width, seat_width:;
+    height, seat_height:;
+};
+    
+(child) back_1:
+{
+    class, ug_block;
+    Origin, Point(0,0,leg_length:+seat_height:);
+    length, large_timble_side:;
+    width, large_timble_side:;
+    height, back_height:;
+    
+    X_Axis, Vector(cos(back_tilt_angle:),0,sin(back_tilt_angle:));
+    Y_Axis, Vector(0,cos(arcsin((top_rail_length: +2*large_timble_side:-seat_width:)/2/back_height:)),
+                    (top_rail_length: +2*large_timble_side: -seat_width:)/2/back_height:);
+};
+
+(child) back_2:
+{
+    class, ug_block;
+    Origin, Point(0, seat_width:-large_timble_side:, leg_length:+seat_height:);
+    length, large_timble_side:;
+    width, large_timble_side:;
+    height, back_height:;
+
+    X_Axis, Vector(cos(back_tilt_angle:),0,sin(back_tilt_angle:));
+    Y_Axis, Vector(0,cos(arcsin((top_rail_length: +2*large_timble_side:-seat_width:)/2/back_height:)),
+                    -(top_rail_length: +2*large_timble_side: -seat_width:)/2/back_height:);
+};
+    
+(child) top_rail:
+{
+    class, ug_block;
+    Origin, Point(large_timble_side:/2-small_timble_side:/2 , 
+                large_timble_side:, leg_length:+seat_height:+back_height:-top_rail_height:)
+                +vector(-(back_height:-top_rail_height:)*sin(back_tilt_angle:),0,0)
+                +vector(0, -(back_height:)*((top_rail_length: +2*large_timble_side: -seat_width:)/2/back_height:),0);
+    length, small_timble_side:;
+    width, top_rail_length:;
+    height, top_rail_height:;
+    
+    X_Axis, Vector(cos(back_tilt_angle:),0,sin(back_tilt_angle:));
+};
+
+(child list) other_3rails:
+{
+    class, ug_block;
+    Origin, Point(large_timble_side:/2-small_timble_side:/2 ,  
+                    large_timble_side:, leg_length:+seat_height:+(back_height:-top_rail_height:)/4*child:index:)
+                    +vector(-((back_height:-top_rail_height:)/4*child:index:)*sin(back_tilt_angle:),0,0)
+                    +vector(0, -((back_height:-top_rail_height:)/4*child:index: + large_timble_side:)*((top_rail_length: +2*large_timble_side: -seat_width:)/2/back_height:),0);
+    length, small_timble_side:;
+    width, seat_width:- 2*large_timble_side: - 2*vector(0,1,0).vector(0, -((back_height:-top_rail_height:)/4*child:index: + large_timble_side:)*((top_rail_length: +2*large_timble_side: -seat_width:)/2/back_height:),0);
+    height, large_timble_side:;
+    quantity, 3;
+    
+    X_Axis, Vector(cos(back_tilt_angle:),0,sin(back_tilt_angle:));
+};
+
+(child list) leg_stiffeners_x:
+{
+    class, ug_block;
+    Origin, Point(large_timble_side:, 
+                large_timble_side:/2-small_timble_side:/2 + (child:index: - 1)*(seat_width:-large_timble_side:), 
+                leg_length:/4);
+    length, seat_length:-2*large_timble_side:;
+    width, small_timble_side:;
+    height, middle_timble_side:;
+    quantity, 2;
+};
+
+(child) leg_stiffener_y:
+{
+    class, ug_block;
+    Origin, Point(seat_length:/2 -large_timble_side:/2 + small_timble_side:/2 ,
+                large_timble_side:/2+small_timble_side:/2, 
+                leg_length:/4);
+    length, small_timble_side:;
+    width, seat_width:-large_timble_side:-small_timble_side:;
+    height, middle_timble_side:;
+};
+
+(child list) seat_stiffeners_x:
+{
+    class, ug_block;
+    Origin, Point(large_timble_side:, 
+                large_timble_side:/2-small_timble_side:/2 + (child:index: - 1)*(seat_width:-large_timble_side:), 
+                leg_length: - middle_timble_side:);
+    length, seat_length:-2*large_timble_side:;
+    width, small_timble_side:;
+    height, middle_timble_side:;
+    quantity, 2;
+};
+
+(child list) seat_stiffeners_y:
+{
+    class, ug_block;
+    Origin, Point(large_timble_side:/2 - small_timble_side:/2 + (child:index: - 1)*(seat_length:-large_timble_side:),
+                large_timble_side:/2+small_timble_side:/2, 
+                leg_length: - middle_timble_side:);
+    length, small_timble_side:;
+    width, seat_width:-large_timble_side:-small_timble_side:;
+    height, middle_timble_side:;
+    quantity, 2;
+};
+    
