@@ -5,12 +5,12 @@ DefClass: chair_zzz (ug_base_part);
     (number parameter) middle_timble_side: 30;
     (number parameter) small_timble_side: 20;
     
-    (number parameter) leg_length: 600;     #500
+    (number parameter) leg_length: 500;     #500
     
-    (number parameter) back_tilt_angle: 15;
-    (number parameter) back_height: 800;        #600
+    (number parameter) back_tilt_angle: 5;
+    (number parameter) back_height: 600;        #600
 
-    (number parameter) top_rail_added_length:   30;
+    (number parameter) top_rail_added_length:   101;
     (number parameter) top_rail_length: seat_width:- 2*large_timble_side: + top_rail_added_length:;
     (number parameter) seat_length: 600;        #600
     (number parameter) seat_width: 500;         #500
@@ -79,8 +79,8 @@ DefClass: chair_zzz (ug_base_part);
 {
     class, ug_block;
     Origin, Point(large_timble_side:/2-small_timble_side:/2 , 
-                large_timble_side:, leg_length:+seat_height:+back_height:-top_rail_height:)
-                +vector(-(back_height:-top_rail_height:)*sin(back_tilt_angle:),0,0)
+                large_timble_side:, leg_length:+seat_height: +back_height: -top_rail_height:)
+                +vector(-(back_height:-top_rail_height:)*sin(back_tilt_angle:),0, -back_height:*(1-cos(back_tilt_angle:)))
                 +vector(0, -(back_height:)*((top_rail_length: +2*large_timble_side: -seat_width:)/2/back_height:),0);
     length, small_timble_side:;
     width, top_rail_length:;
