@@ -88,6 +88,9 @@ class MyHandler(BaseHTTPRequestHandler):
             
             s.wfile.write(bytes('<input type="submit" value="Load Default" formaction="/orderChair" formmethod="get">', 'utf-8'))
             s.wfile.write(bytes('<input type="submit" value="Submit">', 'utf-8'))
+            
+            s.wfile.write(bytes('<p><img src="chair_demo.png" alt="demo" style="float:right;width:42px;height:42px;">demo</p>', 'utf-8'))
+            
             s.wfile.write(bytes('</form></body></html>', 'utf-8'))
         else:
             s.wfile.write(bytes('<html><head><title>Cool interface.</title></head>', 'utf-8'))
