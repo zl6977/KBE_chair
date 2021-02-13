@@ -73,6 +73,7 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<html><body><h2>Chair</h2>', 'utf-8'))
             s.wfile.write(bytes('<form action="/orderChair" method="post">', 'utf-8'))
             
+            s.wfile.write(bytes('<img src="https://raw.githubusercontent.com/zl6977/KBE_chair/main/chair_demo.png" alt="demo" style="float:right;width:670px;height:464px;">', 'utf-8'))
             s.wfile.write(bytes('<label for="leg_length">leg_length:</label><br>', 'utf-8'))
             s.wfile.write(bytes('<input type="text" id="leg_length" name="leg_length" value="500"><br><br>', 'utf-8'))
             s.wfile.write(bytes('<label for="back_height">back_height</label><br>', 'utf-8'))
@@ -89,7 +90,7 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<input type="submit" value="Load Default" formaction="/orderChair" formmethod="get">', 'utf-8'))
             s.wfile.write(bytes('<input type="submit" value="Submit">', 'utf-8'))
             
-            s.wfile.write(bytes('<p><img src="chair_demo.png" alt="demo" style="float:right;width:42px;height:42px;">demo</p>', 'utf-8'))
+            
             
             s.wfile.write(bytes('</form></body></html>', 'utf-8'))
         else:
@@ -146,6 +147,7 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<html><body><h2>Chair</h2>', 'utf-8'))
             s.wfile.write(bytes('<form action="/orderChair" method="post">', 'utf-8'))
             
+            s.wfile.write(bytes('<img src="https://raw.githubusercontent.com/zl6977/KBE_chair/main/chair_demo.png" alt="demo" style="float:right;width:670px;height:464px;">', 'utf-8'))
             s.wfile.write(bytes('<label for="leg_length">leg_length:</label><br>', 'utf-8'))
             s.wfile.write(bytes('<input type="text" id="leg_length" name="leg_length" value="' + str(leg_length[1]) + '"><br><br>', 'utf-8'))
             s.wfile.write(bytes('<label for="back_height">back_height</label><br>', 'utf-8'))
