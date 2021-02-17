@@ -6,10 +6,10 @@ HOST_NAME = '127.0.0.1'
 PORT_NUMBER = 4321 # Maybe set this to 1234
 
 class RuleChecker():
-    leg_length_range = [500,1500]
-    back_height_range = [400,1500]
-    seat_length_range = [200,800]
-    seat_width_range = [300,800]
+    leg_length_range = [500,1000]
+    back_height_range = [400,1000]
+    seat_length_range = [200,600]
+    seat_width_range = [300,600]
     back_tilt_angle_range = [0,30]
     top_rail_added_length_range = [0,400]
     def check_manufacutrable(self, ParameterSet):

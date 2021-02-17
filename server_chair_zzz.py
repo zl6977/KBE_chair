@@ -23,11 +23,7 @@ class MyHandler(BaseHTTPRequestHandler):
         if path.find("/") != -1 and len(path) == 1:
             s.wfile.write(bytes('<html><head><title>Cool interface.</title></head>', 'utf-8'))
             s.wfile.write(bytes("<body><p>Current path: " + path + "</p>", "utf-8"))
-            s.wfile.write(bytes('</body></html>', "utf-8"))
-        elif path.find("/info") != -1:
-            s.wfile.write(bytes('<html><head><title>Cool interface.</title></head>', 'utf-8'))
-            s.wfile.write(bytes("<body><p>Current path: " + path + "</p>", "utf-8"))
-            s.wfile.write(bytes("<body><p>Let's order a chair</p>", "utf-8"))
+            s.wfile.write(bytes('<p><a style="font-size:100%;", href="'+str(HOST_NAME)+':'+str(PORT_NUMBER)+'/orderChair'+'">orderChair</a></p>',"utf-8"))
             s.wfile.write(bytes('</body></html>', "utf-8"))
         elif path.find("/zzztest") != -1:
 #--------
@@ -89,9 +85,7 @@ class MyHandler(BaseHTTPRequestHandler):
             
             s.wfile.write(bytes('<input type="submit" value="Load Default" formaction="/orderChair" formmethod="get">', 'utf-8'))
             s.wfile.write(bytes('<input type="submit" value="Submit">', 'utf-8'))
-            
-            
-            
+
             s.wfile.write(bytes('</form></body></html>', 'utf-8'))
         else:
             s.wfile.write(bytes('<html><head><title>Cool interface.</title></head>', 'utf-8'))
@@ -104,32 +98,10 @@ class MyHandler(BaseHTTPRequestHandler):
         s.send_header("Content-type", "text/html")
         s.end_headers()
         
-        # f = open(os.path.dirname(os.path.abspath(__file__))+"\\templates\\chair_210201.dfa","r")
-        # fileContent = f.read()
-        # f.close()
-        
         # Check what is the path
         path = s.path
         print("Path: ", path)
-        if path.find("/setLength") != -1:
-            content_len = int(s.headers.get('Content-Length'))
-            post_body = s.rfile.read(content_len)
-            param_line = post_body.decode()
-            print("Body: ", param_line)
-            
-            #Get the param value
-            pair = param_line.split("=")
-            
-            s.wfile.write(bytes('<html><body><h2>Chair</h2>', 'utf-8'))
-            s.wfile.write(bytes('<form action="/setLength" method="post">', 'utf-8'))
-            s.wfile.write(bytes('<label for="clength">Set Length:</label><br>', 'utf-8'))
-            s.wfile.write(bytes('<input type="text" id="clength" name="clength" value="' + pair[1] +'"><br><br>', 'utf-8'))
-            s.wfile.write(bytes('<input type="submit" value="Submit">', 'utf-8'))
-            
-            s.wfile.write(bytes('<p>The value of the length was set to ' + pair[1] + '</p>', 'utf-8'))
-            
-            s.wfile.write(bytes('</form></body></html>', 'utf-8'))
-        elif path.find("/orderChair") != -1:
+        if path.find("/orderChair") != -1:
             content_len = int(s.headers.get('Content-Length'))
             post_body = s.rfile.read(content_len)
             param_line = post_body.decode()
