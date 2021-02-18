@@ -26,10 +26,6 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<p><a style="font-size:100%;", href="'+str(HOST_NAME)+':'+str(PORT_NUMBER)+'/orderChair'+'">orderChair</a></p>',"utf-8"))
             s.wfile.write(bytes('</body></html>', "utf-8"))
         elif path.find("/zzztest") != -1:
-#--------
-            # content_len = int(s.headers.get('Content-Length'))
-            # post_body = s.rfile.read()
-            # param_line = post_body.decode()
             param_line=path
             print("Body: ", param_line)
             
@@ -79,7 +75,7 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<label for="seat_width">seat_width</label><br>', 'utf-8'))
             s.wfile.write(bytes('<input type="text" id="seat_width" name="seat_width" value="500"><br><br>', 'utf-8'))
             s.wfile.write(bytes('<label for="back_tilt_angle">back_tilt_angle</label><br>', 'utf-8'))
-            s.wfile.write(bytes('<input type="text" id="back_tilt_angle" name="back_tilt_angle" value="5"><br><br>', 'utf-8'))
+            s.wfile.write(bytes('<input type="text" id="back_tilt_angle" name="back_tilt_angle" value="0"><br><br>', 'utf-8'))
             s.wfile.write(bytes('<label for="top_rail_added_length">top_rail_added_length</label><br>', 'utf-8'))
             s.wfile.write(bytes('<input type="text" id="top_rail_added_length" name="top_rail_added_length" value="10"><br><br>', 'utf-8'))
             
@@ -91,8 +87,6 @@ class MyHandler(BaseHTTPRequestHandler):
             s.wfile.write(bytes('<html><head><title>Cool interface.</title></head>', 'utf-8'))
             s.wfile.write(bytes("<body><p>The path: " + path + "</p>", "utf-8"))
             s.wfile.write(bytes('</body></html>', "utf-8"))
-            
-            
     def do_POST(s):
         s.send_response(200)
         s.send_header("Content-type", "text/html")

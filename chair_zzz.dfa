@@ -7,10 +7,10 @@ DefClass: chair_zzz (ug_base_part);
     
     (number parameter) leg_length: 500;     #500
     
-    (number parameter) back_tilt_angle: 5;
+    (number parameter) back_tilt_angle: 20;
     (number parameter) back_height: 600;        #600
 
-    (number parameter) top_rail_added_length:   60;
+    (number parameter) top_rail_added_length:   10;
     (number parameter) top_rail_length: seat_width:- 2*large_timble_side: + top_rail_added_length:;
     (number parameter) seat_length: 600;        #600
     (number parameter) seat_width: 500;         #500
