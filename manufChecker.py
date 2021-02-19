@@ -10,7 +10,7 @@ class RuleChecker():
     back_height_range = [400,1000]
     seat_length_range = [200,600]
     seat_width_range = [300,600]
-    back_tilt_angle_range = [0,30]
+    back_tilt_angle_range = [0,20]
     top_rail_added_length_range = [0,400]
     def check_manufacutrable(self, ParameterSet):
         leg_length = ParameterSet[0]
@@ -98,18 +98,18 @@ class MyHandler(BaseHTTPRequestHandler):
         s.send_response(200)
         s.send_header("Content-type", "text/html")
         s.end_headers()
-        
+        ruleCheckerTMP = s.rule_checker
         # Check what is the path
         path = s.path
         if path.find("/setParamsIntervals") != -1:
             #TODO - change HTML accordingly
             htmlToSend = s.Html_setParamsIntervals
-            htmlToSend = htmlToSend.replace("<leg_length_range>",s.rule_checker.range_to_string(s.rule_checker.leg_length_range))
-            htmlToSend = htmlToSend.replace("<back_height_range>",s.rule_checker.range_to_string(s.rule_checker.back_height_range))
-            htmlToSend = htmlToSend.replace("<seat_length_range>",s.rule_checker.range_to_string(s.rule_checker.seat_length_range))
-            htmlToSend = htmlToSend.replace("<seat_width_range>",s.rule_checker.range_to_string(s.rule_checker.seat_width_range))
-            htmlToSend = htmlToSend.replace("<back_tilt_angle_range>",s.rule_checker.range_to_string(s.rule_checker.back_tilt_angle_range))
-            htmlToSend = htmlToSend.replace("<top_rail_added_length_range>",s.rule_checker.range_to_string(s.rule_checker.top_rail_added_length_range))
+            htmlToSend = htmlToSend.replace("<leg_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.leg_length_range))
+            htmlToSend = htmlToSend.replace("<back_height_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_height_range))
+            htmlToSend = htmlToSend.replace("<seat_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.seat_length_range))
+            htmlToSend = htmlToSend.replace("<seat_width_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.seat_width_range))
+            htmlToSend = htmlToSend.replace("<back_tilt_angle_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_tilt_angle_range))
+            htmlToSend = htmlToSend.replace("<top_rail_added_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.top_rail_added_length_range))
             s.wfile.write(bytes(htmlToSend, 'utf-8'))
         else:
             s.wfile.write(bytes('<html><head><title>Cool interface.</title></head>', 'utf-8'))
@@ -124,6 +124,7 @@ class MyHandler(BaseHTTPRequestHandler):
         
         # Check what is the path
         path = s.path
+        ruleCheckerTMP = s.rule_checker
         print("Path: ", path)
         if path.find("/setParamsIntervals") != -1:
             #TODO - set intervals for params
@@ -134,20 +135,20 @@ class MyHandler(BaseHTTPRequestHandler):
             
             #Get the param value
             pairs = param_line.split("&")
-            s.rule_checker.leg_length_range = s.rule_checker.string_to_range(pairs[0].split("=")[1])
-            s.rule_checker.back_height_range = s.rule_checker.string_to_range(pairs[1].split("=")[1])
-            s.rule_checker.seat_length_range = s.rule_checker.string_to_range(pairs[2].split("=")[1])
-            s.rule_checker.seat_width_range = s.rule_checker.string_to_range(pairs[3].split("=")[1])
-            s.rule_checker.back_tilt_angle_range = s.rule_checker.string_to_range(pairs[4].split("=")[1])
-            s.rule_checker.top_rail_added_length_range = s.rule_checker.string_to_range(pairs[5].split("=")[1])
+            ruleCheckerTMP.leg_length_range = ruleCheckerTMP.string_to_range(pairs[0].split("=")[1])
+            ruleCheckerTMP.back_height_range = ruleCheckerTMP.string_to_range(pairs[1].split("=")[1])
+            ruleCheckerTMP.seat_length_range = ruleCheckerTMP.string_to_range(pairs[2].split("=")[1])
+            ruleCheckerTMP.seat_width_range = ruleCheckerTMP.string_to_range(pairs[3].split("=")[1])
+            ruleCheckerTMP.back_tilt_angle_range = ruleCheckerTMP.string_to_range(pairs[4].split("=")[1])
+            ruleCheckerTMP.top_rail_added_length_range = ruleCheckerTMP.string_to_range(pairs[5].split("=")[1])
             
             htmlToSend = s.Html_setParamsIntervals
-            htmlToSend = htmlToSend.replace("<leg_length_range>",s.rule_checker.range_to_string(s.rule_checker.leg_length_range))
-            htmlToSend = htmlToSend.replace("<back_height_range>",s.rule_checker.range_to_string(s.rule_checker.back_height_range))
-            htmlToSend = htmlToSend.replace("<seat_length_range>",s.rule_checker.range_to_string(s.rule_checker.seat_length_range))
-            htmlToSend = htmlToSend.replace("<seat_width_range>",s.rule_checker.range_to_string(s.rule_checker.seat_width_range))
-            htmlToSend = htmlToSend.replace("<back_tilt_angle_range>",s.rule_checker.range_to_string(s.rule_checker.back_tilt_angle_range))
-            htmlToSend = htmlToSend.replace("<top_rail_added_length_range>",s.rule_checker.range_to_string(s.rule_checker.top_rail_added_length_range))
+            htmlToSend = htmlToSend.replace("<leg_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.leg_length_range))
+            htmlToSend = htmlToSend.replace("<back_height_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_height_range))
+            htmlToSend = htmlToSend.replace("<seat_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.seat_length_range))
+            htmlToSend = htmlToSend.replace("<seat_width_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.seat_width_range))
+            htmlToSend = htmlToSend.replace("<back_tilt_angle_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_tilt_angle_range))
+            htmlToSend = htmlToSend.replace("<top_rail_added_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.top_rail_added_length_range))
             s.wfile.write(bytes(htmlToSend, 'utf-8'))
             
         elif path.find("/manufCheck") != -1:
@@ -168,7 +169,7 @@ class MyHandler(BaseHTTPRequestHandler):
             
             parameterSet = [leg_length[1], back_height[1], seat_length[1], seat_width[1], back_tilt_angle[1], top_rail_added_length[1]]
             # parameterSet = [int(leg_length[1]), int(back_height[1]), int(seat_length[1]), int(seat_width[1]), int(back_tilt_angle[1]), int(top_rail_added_length[1])]
-            check_result = s.rule_checker.check_manufacutrable(parameterSet)
+            check_result = ruleCheckerTMP.check_manufacutrable(parameterSet)
             
             s.wfile.write(bytes(check_result, 'utf-8'))
 
