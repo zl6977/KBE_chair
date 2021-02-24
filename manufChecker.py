@@ -1,6 +1,7 @@
 #HTTP Manufacturability Checker Server/ Chair example
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import fuseki_updater
 
 HOST_NAME = '127.0.0.1' 
 PORT_NUMBER = 4321 # Maybe set this to 1234
@@ -60,17 +61,28 @@ class RuleChecker():
         return stringToReutrn
         
     def string_to_range(self, string):
-        print(string,"\n")
+        # print(string,"\n")
         pair = string.split("%2C")
-        print(pair)
+        # print(pair)
         lower=float(pair[0])
         upper=float(pair[1])
         rangeToReturn = [lower,upper]
         return rangeToReturn
+        
+    def dict_to_rangeList(self, dict):
+        # print(dict)
+        self.leg_length_range = [float(dict["leg_length"].split(",")[0]),float(dict["leg_length"].split(",")[1])]
+        self.back_height_range = [float(dict["back_height"].split(",")[0]),float(dict["back_height"].split(",")[1])]
+        self.seat_length_range = [float(dict["seat_length"].split(",")[0]),float(dict["seat_length"].split(",")[1])]
+        self.seat_width_range = [float(dict["seat_width"].split(",")[0]),float(dict["seat_width"].split(",")[1])]
+        self.back_tilt_angle_range = [float(dict["back_tilt_angle"].split(",")[0]),float(dict["back_tilt_angle"].split(",")[1])]
+        self.top_rail_added_length_range = [float(dict["top_rail_added_length"].split(",")[0]),float(dict["top_rail_added_length"].split(",")[1])]
+        print("range updated from fuseki")
 
 # Handler of HTTP requests / responses
 class MyHandler(BaseHTTPRequestHandler):
     rule_checker = RuleChecker()
+    fskUpdater = fuseki_updater.Fuseki_updater()
     Html_setParamsIntervals="""
 <html><body><h2>set parameters range</h2>
 <form action="/setParamsIntervals" method="post">
@@ -125,6 +137,7 @@ class MyHandler(BaseHTTPRequestHandler):
         # Check what is the path
         path = s.path
         ruleCheckerTMP = s.rule_checker
+        fskUpdaterTMP = s.fskUpdater
         print("Path: ", path)
         if path.find("/setParamsIntervals") != -1:
             #TODO - set intervals for params
@@ -133,7 +146,7 @@ class MyHandler(BaseHTTPRequestHandler):
             param_line = post_body.decode()
             print("Body: ", param_line)
             
-            #Get the param value
+            #Get the param value from webpage
             pairs = param_line.split("&")
             ruleCheckerTMP.leg_length_range = ruleCheckerTMP.string_to_range(pairs[0].split("=")[1])
             ruleCheckerTMP.back_height_range = ruleCheckerTMP.string_to_range(pairs[1].split("=")[1])
@@ -142,6 +155,18 @@ class MyHandler(BaseHTTPRequestHandler):
             ruleCheckerTMP.back_tilt_angle_range = ruleCheckerTMP.string_to_range(pairs[4].split("=")[1])
             ruleCheckerTMP.top_rail_added_length_range = ruleCheckerTMP.string_to_range(pairs[5].split("=")[1])
             
+            #store the range in fuseki server
+            str_insertParaRange = fskUpdaterTMP.strTmplt_insertParaRange
+            str_insertParaRange = str_insertParaRange.replace("<leg_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.leg_length_range))
+            str_insertParaRange = str_insertParaRange.replace("<back_height_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_height_range))
+            str_insertParaRange = str_insertParaRange.replace("<seat_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.seat_length_range))
+            str_insertParaRange = str_insertParaRange.replace("<seat_width_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.seat_width_range))
+            str_insertParaRange = str_insertParaRange.replace("<back_tilt_angle_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_tilt_angle_range))
+            str_insertParaRange = str_insertParaRange.replace("<top_rail_added_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.top_rail_added_length_range))
+            # print(str_insertParaRange)
+            fskUpdaterTMP.insert_paraRange(str_insertParaRange)
+            
+            #update the webpage
             htmlToSend = s.Html_setParamsIntervals
             htmlToSend = htmlToSend.replace("<leg_length_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.leg_length_range))
             htmlToSend = htmlToSend.replace("<back_height_range>",ruleCheckerTMP.range_to_string(ruleCheckerTMP.back_height_range))
@@ -169,6 +194,13 @@ class MyHandler(BaseHTTPRequestHandler):
             
             parameterSet = [leg_length[1], back_height[1], seat_length[1], seat_width[1], back_tilt_angle[1], top_rail_added_length[1]]
             # parameterSet = [int(leg_length[1]), int(back_height[1]), int(seat_length[1]), int(seat_width[1]), int(back_tilt_angle[1]), int(top_rail_added_length[1])]
+            
+            #fetch the range in fuseki server
+            dictOfRange = fskUpdaterTMP.getQuery_paraRange(fskUpdaterTMP.strTmplt_getRange)
+            print(dictOfRange)
+            #update the range in ruleCheckerTMP
+            ruleCheckerTMP.dict_to_rangeList(dictOfRange)
+            
             check_result = ruleCheckerTMP.check_manufacutrable(parameterSet)
             
             s.wfile.write(bytes(check_result, 'utf-8'))

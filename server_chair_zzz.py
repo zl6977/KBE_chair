@@ -3,6 +3,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import os, requests
 from os import curdir, sep
+import fuseki_updater
 
 HOST_NAME = '10.24.10.83' 
 PORT_NUMBER = 1234
@@ -22,6 +23,16 @@ class ParameterSet():
         s.seat_width = pairs[3].split("=")
         s.back_tilt_angle = pairs[4].split("=")
         s.top_rail_added_length = pairs[5].split("=")
+    def loadFromSPARQL(s):
+        #SPARQL
+        #parse sparql and pass them to the data member
+        fuseki_updater.getQuery_paraSet()
+        s.leg_length = thisdic["leg_length"]
+        s.back_height = thisdic["back_height"]
+        s.seat_length = thisdic["seat_length"]
+        s.seat_width = thisdic["seat_width"]
+        s.back_tilt_angle = thisdic["back_tilt_angle"]
+        s.top_rail_added_length = thisdic["top_rail_added_length"]
 
 # Handler of HTTP requests / responses
 class MyHandler(BaseHTTPRequestHandler):
@@ -173,6 +184,7 @@ class MyHandler(BaseHTTPRequestHandler):
             pairs = param_line.split("&")
             pSet = ParameterSet()
             pSet.loadInput(pairs)
+            # pSet.loadFromSPARQL()
             
             htmlToSend = s.Html_orderChair
             htmlToSend = htmlToSend.replace("<leg_length>", str(pSet.leg_length[1]))
@@ -183,9 +195,9 @@ class MyHandler(BaseHTTPRequestHandler):
             htmlToSend = htmlToSend.replace("<top_rail_added_length>", str(pSet.top_rail_added_length[1]))
             
             strToReplace = '<p>The following parameters have arrived: ' \
-                                + pSet.leg_length[1] + ', ' + pSet.back_height[1] + ', ' \
-                                + pSet.seat_length[1] + ', ' + pSet.seat_width[1] + ', ' \
-                                + pSet.back_tilt_angle[1] +', ' + pSet.top_rail_added_length[1] + '</p>\n'
+                            + pSet.leg_length[1] + ', ' + pSet.back_height[1] + ', ' \
+                            + pSet.seat_length[1] + ', ' + pSet.seat_width[1] + ', ' \
+                            + pSet.back_tilt_angle[1] +', ' + pSet.top_rail_added_length[1] + '</p>\n'
             #manufacurable check-query the result from the manufChecker.py server
             dataToSend = [pSet.leg_length,pSet.back_height,pSet.seat_length,
                             pSet.seat_width,pSet.back_tilt_angle,pSet.top_rail_added_length]
